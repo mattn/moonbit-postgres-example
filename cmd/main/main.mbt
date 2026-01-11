@@ -6,17 +6,18 @@ fn main {
   
   match @postgres.connect(conn_url) {
     Ok(conn) => {
+      defer conn.close()
       println("Connected to PostgreSQL")
 
       // Example 1: Simple query
       match conn.query("SELECT version()") {
         Ok(result) => {
+          defer result.free()
           let rows = result.rows()
           println("Query result:")
           rows.iter(fn(row) {
             println("  " + row.to_string())
           })
-          result.free()
         }
         Err(e) => println("Query error: " + @postgres.PgError::to_string(e))
       }
@@ -28,17 +29,16 @@ fn main {
         @postgres.from_string("Alice")
       ]) {
         Ok(result) => {
+          defer result.free()
           let rows = result.rows()
           println("Parameterized query result:")
           rows.iter(fn(row) {
             println("  " + row.to_string())
           })
-          result.free()
         }
         Err(e) => println("Execute error: " + @postgres.PgError::to_string(e))
       }
 
-      conn.close()
       println("Connection closed")
     }
     Err(e) => {
