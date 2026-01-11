@@ -12,7 +12,10 @@ fn main {
       match conn.query("SELECT version()") {
         Ok(result) => {
           let rows = result.rows()
-          println("Query result: " + rows.to_string())
+          println("Query result:")
+          rows.iter(fn(row) {
+            println("  " + row.to_string())
+          })
           result.free()
         }
         Err(e) => println("Query error: " + @postgres.PgError::to_string(e))
@@ -26,7 +29,10 @@ fn main {
       ]) {
         Ok(result) => {
           let rows = result.rows()
-          println("Parameterized query result: " + rows.to_string())
+          println("Parameterized query result:")
+          rows.iter(fn(row) {
+            println("  " + row.to_string())
+          })
           result.free()
         }
         Err(e) => println("Execute error: " + @postgres.PgError::to_string(e))

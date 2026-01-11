@@ -47,8 +47,22 @@ moon build --target native
 The main program demonstrates:
 
 1. **Connecting to PostgreSQL** using environment variables
-2. **Simple query** - Running `SELECT version()`
-3. **Parameterized queries** - Using `$1`, `$2` placeholders with proper parameter binding
+2. **Simple query** - Running `SELECT version()` and iterating over result rows
+3. **Parameterized queries** - Using `$1`, `$2` placeholders with proper parameter binding and result iteration
+
+## Working with Query Results
+
+Results from queries return rows as `Array[Array[String]]`. To process results:
+
+```moonbit
+let rows = result.rows()
+rows.iter(fn(row) {
+  // row is Array[String] - each element is a column value
+  println(row.to_string())
+})
+```
+
+This allows you to handle multiple rows returned from a query.
 
 ## License
 
