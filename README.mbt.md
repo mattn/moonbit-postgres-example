@@ -16,6 +16,8 @@ This example shows how to:
 - PostgreSQL server running
 - `libpq` development libraries (on some systems)
 
+**Note**: This project only supports the `native` target because it uses PostgreSQL's libpq C library. You must always specify `--target native` when building, checking, or testing.
+
 ## Setup
 
 1. Set the database connection URL:
@@ -55,14 +57,31 @@ The main program demonstrates:
 Results from queries return rows as `Array[Array[String]]`. To process results:
 
 ```moonbit
-let rows = result.rows()
-rows.iter(fn(row) {
+for row in result.rows() {
   // row is Array[String] - each element is a column value
   println(row.to_string())
-})
+}
 ```
 
 This allows you to handle multiple rows returned from a query.
+
+## Parameter Values
+
+When executing parameterized queries, use helper functions to construct parameter values:
+
+```moonbit
+conn.execute("SELECT * FROM users WHERE id = $1 AND name = $2", [
+  @postgres.from_int(42),
+  @postgres.from_string("Alice")
+])
+```
+
+Available helper functions:
+- `from_int(value : Int) -> Value`
+- `from_string(value : String) -> Value`
+- `from_bool(value : Bool) -> Value`
+
+Note: The `Value` type constructors (e.g., `Value::Int(42)`) are not publicly exposed; use the helper functions instead.
 
 ## License
 

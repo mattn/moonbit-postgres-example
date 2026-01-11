@@ -5,3 +5,4 @@ target/
 setenv.sh
 trace.json
 AGENTS.md
+bug.txt
